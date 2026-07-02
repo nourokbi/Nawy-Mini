@@ -1,8 +1,10 @@
 import type { NextFunction, Request, Response } from "express"
+// import { createApartmentSchema } from "../validations/apartment.schema.js"
 
 
 export async function getAllApartments(req: Request, res: Response, next: NextFunction) {
-  res.send([])
+  res.json({ message: "Get all apartments" })
+
 }
 
 export async function getApartmentById(req: Request, res: Response, next: NextFunction) {

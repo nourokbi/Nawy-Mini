@@ -1,18 +1,12 @@
 import {Router} from "express";
+import * as apartmentsController from "../controllers/apartments.controller.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.send("Heeeeeeeeey");
-});
+router.get("/", apartmentsController.getAllApartments);
 
-router.get("/:id", (req, res) => {
-  res.json({ id: req.params.id });
-});
+router.get("/:id", apartmentsController.getApartmentById);
 
-router.post("/", (req, res) => {
-  res.status(201).json(req.body);
-});
-
+router.post("/", apartmentsController.createApartment);
 
 export default router;

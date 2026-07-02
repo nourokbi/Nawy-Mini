@@ -1,4 +1,5 @@
-// src/lib/prisma.ts
+// prisma client setup with adapter to connect postgres DB
+import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 

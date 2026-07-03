@@ -10,7 +10,7 @@ import {
 } from "../dtos/apartmentDtos.js";
 
 export async function getAllApartments(query?: ListAllApartmentsQuery) {
-  const { search } = query || {};
+  const { search, page = 1, limit = 9 } = query ?? {};
 
   const where: Prisma.ApartmentWhereInput = {};
 
@@ -21,17 +21,34 @@ export async function getAllApartments(query?: ListAllApartmentsQuery) {
       { project: { contains: search, mode: "insensitive" } },
     ];
   }
-  const apartments = await prisma.apartment.findMany({
-    where,
-  });
-  return apartments.map(toApartmentDto);
+
+  // Run the page query and the total count in one round-trip.
+  const [apartments, total] = await prisma.$transaction([
+    prisma.apartment.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" }, // deterministic order is required for paging
+    }),
+    prisma.apartment.count({ where }),
+  ]);
+
+  return {
+    data: apartments.map(toApartmentDto),
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 }
 
 export async function getApartmentById(id: string) {
   const apartment = await prisma.apartment.findUniqueOrThrow({
     where: { id },
   });
-  return apartment ? toApartmentDetailsDto(apartment) : null;
+  return toApartmentDetailsDto(apartment);
 }
 
 export async function createApartment(body: CreateApartmentBody) {

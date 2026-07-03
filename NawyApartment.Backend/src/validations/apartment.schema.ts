@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 // Validating the request body for creating a new apartment
 export const createApartmentSchema = z.object({
   unitName: z.string().trim().min(1, "unitName is required"),
@@ -15,11 +14,12 @@ export const createApartmentSchema = z.object({
   address: z.string().trim().optional(),
 });
 
-
 export type CreateApartmentBody = z.infer<typeof createApartmentSchema>;
 
 export const listApartmentsSchema = z.object({
   search: z.string().trim().optional(),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(50).default(9),
 });
 
 export type ListAllApartmentsQuery = z.infer<typeof listApartmentsSchema>;

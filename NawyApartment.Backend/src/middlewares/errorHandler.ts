@@ -26,6 +26,13 @@ export default function errorHandler(err: any, req: Request, res: Response, next
     });
   }
 
+  // Malformed JSON body (express.json parser fails before the controller) -> 400
+  if (err instanceof SyntaxError && (err as any).status === 400 && "body" in err) {
+    return res.status(400).json({
+      error: "Malformed JSON in request body",
+    });
+  }
+
   console.error(err);
   res.status(500).json({ error: "Internal server error" });
 }

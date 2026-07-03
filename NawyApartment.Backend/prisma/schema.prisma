@@ -15,7 +15,7 @@ datasource db {
 model Apartment {
   id          String   @id @default(uuid())
   unitName    String
-  unitNumber  String
+  unitNumber  String   @unique
   project     String
   description String
   price       Int // Int used to make money a whole number
@@ -26,8 +26,4 @@ model Apartment {
   address     String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([unitName])
-  @@index([unitNumber])
-  @@index([project])
 }

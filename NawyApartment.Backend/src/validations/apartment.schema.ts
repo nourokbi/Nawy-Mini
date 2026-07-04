@@ -16,13 +16,21 @@ export const createApartmentSchema = z.object({
 
 export type CreateApartmentBody = z.infer<typeof createApartmentSchema>;
 
-export const listApartmentsSchema = z.object({
-  search: z.string().trim().optional(),
+// Pagination query for the list endpoint: GET /apartments
+export const paginationSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(50).default(9),
 });
 
-export type ListAllApartmentsQuery = z.infer<typeof listApartmentsSchema>;
+export type PaginationQuery = z.infer<typeof paginationSchema>;
+
+// Search query for the dedicated endpoint: GET /apartments/search
+// Reuses the pagination fields and adds an optional search term.
+export const searchApartmentsSchema = paginationSchema.extend({
+  search: z.string().trim().optional(),
+});
+
+export type SearchApartmentsQuery = z.infer<typeof searchApartmentsSchema>;
 
 export const getApartmentByIdSchema = z.object({
   id: z.uuid("Invalid apartment ID"),

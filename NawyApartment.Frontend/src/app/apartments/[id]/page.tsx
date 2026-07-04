@@ -1,0 +1,22 @@
+import Container from "@/app/components/Container";
+import { getApartment } from "../api";
+import ApartmentDetails from "../components/ApartmentDetails";
+
+type ApartmentDetailsPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function ApartmentDetailsPage({
+  params,
+}: ApartmentDetailsPageProps) {
+  const { id } = await params;
+  const apartment = await getApartment(id);
+
+  return (
+    <Container>
+      <main className="py-10">
+        <ApartmentDetails apartment={apartment} />
+      </main>
+    </Container>
+  );
+}

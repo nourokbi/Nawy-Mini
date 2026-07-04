@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Container from "./Container";
+import NavLinks from "./NavLinks";
 
 export default function Navbar() {
   return (
@@ -14,8 +15,10 @@ export default function Navbar() {
               width={200}
               height={75}
               priority
+              className="h-auto w-28 sm:w-48"
             />
           </Link>
+          <NavLinks />
         </div>
       </Container>
     </header>

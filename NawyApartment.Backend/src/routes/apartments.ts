@@ -4,6 +4,7 @@ import * as apartmentsController from "../controllers/apartments.controller.js";
 const router = Router();
 
 router.get("/", apartmentsController.getAllApartments);
+router.get("/search", apartmentsController.searchApartments);
 router.get("/:id", apartmentsController.getApartmentById);
 router.post("/", apartmentsController.createApartment);
 

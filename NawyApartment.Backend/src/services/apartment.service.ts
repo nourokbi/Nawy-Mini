@@ -2,27 +2,19 @@ import { prisma } from "../lib/prisma.js";
 import { Prisma } from "../generated/prisma/client.js";
 import type {
   CreateApartmentBody,
-  ListAllApartmentsQuery,
+  PaginationQuery,
+  SearchApartmentsQuery,
 } from "../validations/apartment.schema.js";
 import {
   toApartmentDto,
   toApartmentDetailsDto,
 } from "../dtos/apartmentDtos.js";
 
-export async function getAllApartments(query?: ListAllApartmentsQuery) {
-  const { search, page = 1, limit = 9 } = query ?? {};
-
-  const where: Prisma.ApartmentWhereInput = {};
-
-  if (search) {
-    where.OR = [
-      { unitName: { contains: search, mode: "insensitive" } },
-      { unitNumber: { contains: search, mode: "insensitive" } },
-      { project: { contains: search, mode: "insensitive" } },
-    ];
-  }
-
-  // Run the page query and the total count in parallel.
+async function queryApartments(
+  where: Prisma.ApartmentWhereInput,
+  page: number,
+  limit: number,
+) {
   const [apartments, total] = await Promise.all([
     prisma.apartment.findMany({
       where,
@@ -35,13 +27,29 @@ export async function getAllApartments(query?: ListAllApartmentsQuery) {
 
   return {
     data: apartments.map(toApartmentDto),
-    meta: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
+    meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
   };
+}
+
+export async function getAllApartments(query?: PaginationQuery) {
+  const { page = 1, limit = 9 } = query ?? {};
+  return queryApartments({}, page, limit);
+}
+
+export async function searchApartments(query: SearchApartmentsQuery) {
+  const { search, page = 1, limit = 9 } = query;
+
+  const where: Prisma.ApartmentWhereInput = search
+    ? {
+        OR: [
+          { unitName: { contains: search, mode: "insensitive" } },
+          { unitNumber: { contains: search, mode: "insensitive" } },
+          { project: { contains: search, mode: "insensitive" } },
+        ],
+      }
+    : {};
+
+  return queryApartments(where, page, limit);
 }
 
 export async function getApartmentById(id: string) {

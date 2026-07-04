@@ -32,6 +32,41 @@ const apartmentDetailsDto = {
   },
 } as const;
 
+// Paginated envelope returned by both the list and search endpoints.
+const pagedApartments = {
+  type: "object",
+  properties: {
+    data: { type: "array", items: apartmentDto },
+    meta: {
+      type: "object",
+      properties: {
+        page: { type: "integer", example: 1 },
+        limit: { type: "integer", example: 9 },
+        total: { type: "integer", example: 18 },
+        totalPages: { type: "integer", example: 2 },
+      },
+    },
+  },
+} as const;
+
+// Shared page/limit query parameters.
+const paginationParams = [
+  {
+    name: "page",
+    in: "query",
+    required: false,
+    schema: { type: "integer", minimum: 1, default: 1 },
+    description: "1-based page number.",
+  },
+  {
+    name: "limit",
+    in: "query",
+    required: false,
+    schema: { type: "integer", minimum: 1, maximum: 50, default: 9 },
+    description: "Items per page (max 50).",
+  },
+] as const;
+
 const errorResponse = {
   type: "object",
   properties: { error: { type: "string" } },
@@ -59,55 +94,14 @@ export const openApiDocument = {
     "/api/apartments": {
       get: {
         tags: ["Apartments"],
-        summary: "List apartments (paginated, searchable)",
+        summary: "List apartments (paginated)",
         description:
-          "Returns a paginated list of apartments. Optional `search` matches unit name, unit number or project (case-insensitive).",
-        parameters: [
-          {
-            name: "search",
-            in: "query",
-            required: false,
-            schema: { type: "string" },
-            description: "Filter by unit name, unit number or project.",
-            example: "garden",
-          },
-          {
-            name: "page",
-            in: "query",
-            required: false,
-            schema: { type: "integer", minimum: 1, default: 1 },
-            description: "1-based page number.",
-          },
-          {
-            name: "limit",
-            in: "query",
-            required: false,
-            schema: { type: "integer", minimum: 1, maximum: 50, default: 9 },
-            description: "Items per page (max 50).",
-          },
-        ],
+          "Returns a paginated list of all apartments. Use `GET /api/apartments/search` to filter by a term.",
+        parameters: [...paginationParams],
         responses: {
           "200": {
             description: "A page of apartments.",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    data: { type: "array", items: apartmentDto },
-                    meta: {
-                      type: "object",
-                      properties: {
-                        page: { type: "integer", example: 1 },
-                        limit: { type: "integer", example: 9 },
-                        total: { type: "integer", example: 18 },
-                        totalPages: { type: "integer", example: 2 },
-                      },
-                    },
-                  },
-                },
-              },
-            },
+            content: { "application/json": { schema: pagedApartments } },
           },
           "400": {
             description: "Invalid query parameters.",
@@ -138,6 +132,35 @@ export const openApiDocument = {
           "409": {
             description: "An apartment with the same unit number already exists.",
             content: { "application/json": { schema: errorResponse } },
+          },
+        },
+      },
+    },
+    "/api/apartments/search": {
+      get: {
+        tags: ["Apartments"],
+        summary: "Search apartments (paginated)",
+        description:
+          "Returns a paginated list of apartments filtered by `search` (matches unit name, unit number or project, case-insensitive). Omitting `search` returns all apartments.",
+        parameters: [
+          {
+            name: "search",
+            in: "query",
+            required: false,
+            schema: { type: "string" },
+            description: "Filter by unit name, unit number or project.",
+            example: "garden",
+          },
+          ...paginationParams,
+        ],
+        responses: {
+          "200": {
+            description: "A page of matching apartments.",
+            content: { "application/json": { schema: pagedApartments } },
+          },
+          "400": {
+            description: "Invalid query parameters.",
+            content: { "application/json": { schema: validationErrorResponse } },
           },
         },
       },

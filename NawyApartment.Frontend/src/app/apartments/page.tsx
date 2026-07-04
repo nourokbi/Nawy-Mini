@@ -1,21 +1,28 @@
 import ApartmentsActions from "./components/ApartmentsActions";
 import ApartmentsHeader from "./components/ApartmentsHeader";
 import ApartmentsList from "./components/ApartmentsList";
+import ApartmentsPagination from "./components/ApartmentsPagination";
 import { getApartments } from "./api";
 import Container from "../components/Container";
 
 export default async function Apartments({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string | string[] }>;
+  searchParams: Promise<{ search?: string | string[]; page?: string | string[] }>;
 }) {
-  const { search } = await searchParams;
+  const { search, page } = await searchParams;
   const term = Array.isArray(search) ? search[0] : search;
-  const apartments = await getApartments(term);
+  const pageParam = Array.isArray(page) ? page[0] : page;
+  const pageNum = Number(pageParam) || 1;
+
+  const { data: apartments, meta } = await getApartments({
+    search: term,
+    page: pageNum,
+  });
 
   return (
     <Container>
-      <main className="py-10">
+      <main className="w-full py-10">
         {/* Header */}
         <ApartmentsHeader />
 
@@ -24,6 +31,9 @@ export default async function Apartments({
 
         {/* Apartment list */}
         <ApartmentsList apartments={apartments} />
+
+        {/* Pagination */}
+        <ApartmentsPagination meta={meta} />
       </main>
     </Container>
   );

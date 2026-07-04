@@ -11,3 +11,17 @@ export type Apartment = {
   imageUrl: string;
   address: string;
 };
+
+// Pagination metadata returned by the list/search endpoints.
+export type ApartmentsMeta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+// The full envelope both endpoints return.
+export type PaginatedApartments = {
+  data: Apartment[];
+  meta: ApartmentsMeta;
+};

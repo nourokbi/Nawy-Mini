@@ -21,6 +21,8 @@ export default function ApartmentsActions() {
       } else {
         params.delete("search");
       }
+      // A new search should start from the first page.
+      params.delete("page");
       replace(`${pathname}?${params.toString()}`);
     }, 300);
   }

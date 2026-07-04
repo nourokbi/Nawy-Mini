@@ -1,11 +1,16 @@
 import express from "express";
+import swaggerUi from "swagger-ui-express";
 import apartmentsRouter from "./routes/apartments.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import { openApiDocument } from "./docs/openapi.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+
+// Interactive API documentation (Swagger UI)
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument as object));
 
 app.use("/api/apartments", apartmentsRouter);
 

@@ -22,13 +22,13 @@ export async function getAllApartments(query?: ListAllApartmentsQuery) {
     ];
   }
 
-  // Run the page query and the total count in one round-trip.
-  const [apartments, total] = await prisma.$transaction([
+  // Run the page query and the total count in parallel.
+  const [apartments, total] = await Promise.all([
     prisma.apartment.findMany({
       where,
       skip: (page - 1) * limit,
       take: limit,
-      orderBy: { createdAt: "desc" }, // deterministic order is required for paging
+      orderBy: { createdAt: "desc" },
     }),
     prisma.apartment.count({ where }),
   ]);
@@ -52,16 +52,6 @@ export async function getApartmentById(id: string) {
 }
 
 export async function createApartment(body: CreateApartmentBody) {
-  // Reject duplicates: an apartment with the same unit number
-  // const apartmentExists = await prisma.apartment.findUnique({
-  //   where: { unitNumber: body.unitNumber },
-  // });
-
-  // // Already exists — signal the conflict to the controller by returning null
-  // if (apartmentExists) {
-  //   return null;
-  // }
-
   // Build the apartment record manually, then hand it to the database
   const apartment: Prisma.ApartmentCreateInput = {
     unitName: body.unitName,
@@ -76,6 +66,7 @@ export async function createApartment(body: CreateApartmentBody) {
     address: body.address ?? null,
   };
 
+  // return the created apartment or throw an error if the creation fails.
   const created = await prisma.apartment.create({ data: apartment });
   return toApartmentDetailsDto(created);
 }

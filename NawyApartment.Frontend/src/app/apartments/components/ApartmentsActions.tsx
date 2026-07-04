@@ -34,7 +34,7 @@ export default function ApartmentsActions() {
         defaultValue={searchParams.get("search") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
         placeholder="Search by Unit Name, Unit Number, or Project..."
-        className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#1E4164] focus:ring-1 focus:ring-[#1E4164] shadow-md"
+        className="w-full rounded-lg border border-gray-400 px-4 py-3 outline-none focus:border-[#1E4164] focus:ring-1 focus:ring-[#1E4164] shadow-md"
       />
     </div>
   );

@@ -2,6 +2,7 @@ import ApartmentsActions from "./components/ApartmentsActions";
 import ApartmentsHeader from "./components/ApartmentsHeader";
 import ApartmentsList from "./components/ApartmentsList";
 import ApartmentsPagination from "./components/ApartmentsPagination";
+import ApartmentsEmpty from "./components/ApartmentsEmpty";
 import { getApartments } from "./api";
 import Container from "../components/Container";
 
@@ -29,11 +30,15 @@ export default async function Apartments({
         {/* Search & Filters*/}
         <ApartmentsActions />
 
-        {/* Apartment list */}
-        <ApartmentsList apartments={apartments} />
-
-        {/* Pagination */}
-        <ApartmentsPagination meta={meta} />
+        {/* Apartment list, or an empty state when there's nothing to show */}
+        {apartments.length > 0 ? (
+          <>
+            <ApartmentsList apartments={apartments} />
+            <ApartmentsPagination meta={meta} />
+          </>
+        ) : (
+          <ApartmentsEmpty search={term} />
+        )}
       </main>
     </Container>
   );

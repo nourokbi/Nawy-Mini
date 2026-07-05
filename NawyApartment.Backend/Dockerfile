@@ -21,6 +21,6 @@ RUN npm run build
 # 3) The backend listens on 3001.
 EXPOSE 3001
 
-# 4) On container start: apply DB migrations, seed the 18 apartments,
+# 4) On container start: apply DB migrations, seed the 21 apartments,
 #    then launch the compiled server.
 CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node dist/index.js"]

@@ -26,7 +26,7 @@ services:
       # host is the service name "db" (Docker's internal network), not localhost
       DATABASE_URL: postgresql://postgres:postgres@db:5432/nawy-db?schema=public
       PORT: 3001
-      JWT_SECRET: your_jwt_secret_key
+      JWT_SECRET: 7ec85ecd3452d9a52f69fbfac8e38277e44935c4392207a83f4d96ff0e07136a6e73d39b0250b1b59df7e8d4df408754915ba2ea4a304d0da1fa9c7bb544a877
       AUTH_EMAIL: Admin@nawy.com
       AUTH_PASSWORD: Admin@123
       # must match the frontend's browser origin (its published host port)

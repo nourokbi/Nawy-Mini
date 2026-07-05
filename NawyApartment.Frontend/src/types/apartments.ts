@@ -3,13 +3,13 @@ export type Apartment = {
   unitName: string;
   unitNumber: string;
   project: string;
-  description: string;
+  description: string | null;
   price: number;
   bedrooms: number;
   bathrooms: number;
   area: number;
-  imageUrl: string;
-  address: string;
+  imageUrl: string | null;
+  address: string | null;
 };
 
 // Pagination metadata returned by the list/search endpoints.

@@ -244,7 +244,7 @@ export type ApartmentGroupByOutputType = {
   unitName: string
   unitNumber: string
   project: string
-  description: string
+  description: string | null
   price: number
   bedrooms: number
   bathrooms: number
@@ -283,7 +283,7 @@ export type ApartmentWhereInput = {
   unitName?: Prisma.StringFilter<"Apartment"> | string
   unitNumber?: Prisma.StringFilter<"Apartment"> | string
   project?: Prisma.StringFilter<"Apartment"> | string
-  description?: Prisma.StringFilter<"Apartment"> | string
+  description?: Prisma.StringNullableFilter<"Apartment"> | string | null
   price?: Prisma.IntFilter<"Apartment"> | number
   bedrooms?: Prisma.IntFilter<"Apartment"> | number
   bathrooms?: Prisma.IntFilter<"Apartment"> | number
@@ -299,7 +299,7 @@ export type ApartmentOrderByWithRelationInput = {
   unitName?: Prisma.SortOrder
   unitNumber?: Prisma.SortOrder
   project?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
@@ -318,7 +318,7 @@ export type ApartmentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ApartmentWhereInput | Prisma.ApartmentWhereInput[]
   unitName?: Prisma.StringFilter<"Apartment"> | string
   project?: Prisma.StringFilter<"Apartment"> | string
-  description?: Prisma.StringFilter<"Apartment"> | string
+  description?: Prisma.StringNullableFilter<"Apartment"> | string | null
   price?: Prisma.IntFilter<"Apartment"> | number
   bedrooms?: Prisma.IntFilter<"Apartment"> | number
   bathrooms?: Prisma.IntFilter<"Apartment"> | number
@@ -334,7 +334,7 @@ export type ApartmentOrderByWithAggregationInput = {
   unitName?: Prisma.SortOrder
   unitNumber?: Prisma.SortOrder
   project?: Prisma.SortOrder
-  description?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
@@ -358,7 +358,7 @@ export type ApartmentScalarWhereWithAggregatesInput = {
   unitName?: Prisma.StringWithAggregatesFilter<"Apartment"> | string
   unitNumber?: Prisma.StringWithAggregatesFilter<"Apartment"> | string
   project?: Prisma.StringWithAggregatesFilter<"Apartment"> | string
-  description?: Prisma.StringWithAggregatesFilter<"Apartment"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"Apartment"> | string | null
   price?: Prisma.IntWithAggregatesFilter<"Apartment"> | number
   bedrooms?: Prisma.IntWithAggregatesFilter<"Apartment"> | number
   bathrooms?: Prisma.IntWithAggregatesFilter<"Apartment"> | number
@@ -374,7 +374,7 @@ export type ApartmentCreateInput = {
   unitName: string
   unitNumber: string
   project: string
-  description: string
+  description?: string | null
   price: number
   bedrooms: number
   bathrooms: number
@@ -390,7 +390,7 @@ export type ApartmentUncheckedCreateInput = {
   unitName: string
   unitNumber: string
   project: string
-  description: string
+  description?: string | null
   price: number
   bedrooms: number
   bathrooms: number
@@ -406,7 +406,7 @@ export type ApartmentUpdateInput = {
   unitName?: Prisma.StringFieldUpdateOperationsInput | string
   unitNumber?: Prisma.StringFieldUpdateOperationsInput | string
   project?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.IntFieldUpdateOperationsInput | number
   bedrooms?: Prisma.IntFieldUpdateOperationsInput | number
   bathrooms?: Prisma.IntFieldUpdateOperationsInput | number
@@ -422,7 +422,7 @@ export type ApartmentUncheckedUpdateInput = {
   unitName?: Prisma.StringFieldUpdateOperationsInput | string
   unitNumber?: Prisma.StringFieldUpdateOperationsInput | string
   project?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.IntFieldUpdateOperationsInput | number
   bedrooms?: Prisma.IntFieldUpdateOperationsInput | number
   bathrooms?: Prisma.IntFieldUpdateOperationsInput | number
@@ -438,7 +438,7 @@ export type ApartmentCreateManyInput = {
   unitName: string
   unitNumber: string
   project: string
-  description: string
+  description?: string | null
   price: number
   bedrooms: number
   bathrooms: number
@@ -454,7 +454,7 @@ export type ApartmentUpdateManyMutationInput = {
   unitName?: Prisma.StringFieldUpdateOperationsInput | string
   unitNumber?: Prisma.StringFieldUpdateOperationsInput | string
   project?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.IntFieldUpdateOperationsInput | number
   bedrooms?: Prisma.IntFieldUpdateOperationsInput | number
   bathrooms?: Prisma.IntFieldUpdateOperationsInput | number
@@ -470,7 +470,7 @@ export type ApartmentUncheckedUpdateManyInput = {
   unitName?: Prisma.StringFieldUpdateOperationsInput | string
   unitNumber?: Prisma.StringFieldUpdateOperationsInput | string
   project?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.IntFieldUpdateOperationsInput | number
   bedrooms?: Prisma.IntFieldUpdateOperationsInput | number
   bathrooms?: Prisma.IntFieldUpdateOperationsInput | number
@@ -547,16 +547,16 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -639,7 +639,7 @@ export type $ApartmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     unitName: string
     unitNumber: string
     project: string
-    description: string
+    description: string | null
     price: number
     bedrooms: number
     bathrooms: number

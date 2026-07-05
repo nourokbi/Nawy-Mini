@@ -65,7 +65,7 @@ export async function createApartment(body: CreateApartmentBody) {
     unitName: body.unitName,
     unitNumber: body.unitNumber,
     project: body.project,
-    description: body.description,
+    description: body.description ?? null,
     price: body.price,
     bedrooms: body.bedrooms,
     bathrooms: body.bathrooms,

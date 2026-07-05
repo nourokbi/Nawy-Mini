@@ -20,7 +20,7 @@ export type apartmentDetailsDto = {
   unitNumber: string;
   unitName: string;
   project: string;
-  description: string;
+  description: string | null;
   price: number;
   bedrooms: number;
   bathrooms: number;

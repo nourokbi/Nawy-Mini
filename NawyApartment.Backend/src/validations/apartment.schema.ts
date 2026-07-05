@@ -5,7 +5,7 @@ export const createApartmentSchema = z.object({
   unitName: z.string().trim().min(1, "unitName is required"),
   unitNumber: z.string().trim().min(1, "unitNumber is required"),
   project: z.string().trim().min(1, "project is required"),
-  description: z.string().trim().min(1, "description is required"),
+  description: z.string().trim().optional(),
   price: z.number().int().nonnegative(),
   bedrooms: z.number().int().nonnegative(),
   bathrooms: z.number().int().nonnegative(),

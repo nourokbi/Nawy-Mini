@@ -17,11 +17,11 @@ model Apartment {
   unitName    String
   unitNumber  String   @unique
   project     String
-  description String
+  description String?
   price       Int // Int used to make money a whole number
   bedrooms    Int
   bathrooms   Int
-  area        Int // square meters
+  area        Int
   imageUrl    String?
   address     String?
   createdAt   DateTime @default(now())

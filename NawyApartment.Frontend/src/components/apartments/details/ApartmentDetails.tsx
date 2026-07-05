@@ -1,21 +1,14 @@
 import Link from "next/link";
 import { ArrowLeft, Bed, Bath, Ruler, MapPin, Hash } from "lucide-react";
-import { Apartment } from "@/app/apartments/types";
+import { Apartment } from "@/types/apartments";
+import { formatPrice, resolveImageSrc } from "@/lib/helpers";
 
 type ApartmentDetailsProps = {
   apartment: Apartment;
 };
 
-// EGP price like "9,500,000 EGP"
-const priceFormatter = new Intl.NumberFormat("en-EG");
-
-// Local placeholder shown when the image URL is missing.
-const FALLBACK_SRC = "/apartment-placeholder.svg";
-
 export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
-  const imageSrc = apartment.imageUrl?.trim()
-    ? apartment.imageUrl
-    : FALLBACK_SRC;
+  const imageSrc = resolveImageSrc(apartment.imageUrl);
 
   const specs = [
     { icon: Bed, label: "Bedrooms", value: apartment.bedrooms },
@@ -58,7 +51,7 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
           </p>
 
           <p className="mt-4 text-3xl font-bold text-black">
-            {priceFormatter.format(apartment.price)} EGP
+            {formatPrice(apartment.price)}
           </p>
 
           {/* Specs */}
@@ -92,7 +85,7 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
       <section className="mt-10">
         <h2 className="text-xl font-semibold text-[#1E4164]">Description</h2>
         <p className="mt-3 leading-relaxed text-gray-600">
-          {apartment.description}
+          {apartment.description || "No description provided."}
         </p>
       </section>
     </div>

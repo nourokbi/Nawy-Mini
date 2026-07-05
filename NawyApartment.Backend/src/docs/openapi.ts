@@ -1,42 +1,43 @@
 import { z } from "zod";
 import { createApartmentSchema } from "../validations/apartment.schema.js";
+import { loginSchema } from "../validations/auth.schema.js";
 
-// Reuse the real Zod validation schema as the single source of truth for the
-// request body, converted to an OpenAPI 3.0 schema (Zod v4 native converter).
-const createApartmentBodySchema = z.toJSONSchema(createApartmentSchema, {
-  target: "openapi-3.0",
-});
+// Reuse the real Zod schemas as the single source of truth for request bodies.
+const toOpenApi = (schema: z.ZodType) =>
+  z.toJSONSchema(schema, { target: "openapi-3.0" });
 
-// Shared response shapes (mirror the DTOs in src/dtos/apartmentDtos.ts)
-const apartmentDto = {
+const createApartmentBody = toOpenApi(createApartmentSchema);
+const loginBody = toOpenApi(loginSchema);
+
+// ── Reusable response shapes (mirror the DTOs) ──
+const apartment = {
   type: "object",
   properties: {
     id: { type: "string", format: "uuid" },
-    unitNumber: { type: "string", example: "MV-iCity-B4-102" },
     unitName: { type: "string", example: "Garden Apartment" },
+    unitNumber: { type: "string", example: "MV-iCity-B4-102" },
     project: { type: "string", example: "Mountain View iCity" },
     price: { type: "integer", example: 9500000 },
     bedrooms: { type: "integer", example: 3 },
     bathrooms: { type: "integer", example: 3 },
     area: { type: "integer", example: 165 },
-    imageUrl: { type: "string", nullable: true, example: "https://example.com/a.jpg" },
-    address: { type: "string", nullable: true, example: "New Cairo, Cairo" },
+    imageUrl: { type: "string", nullable: true },
+    address: { type: "string", nullable: true },
   },
 } as const;
 
-const apartmentDetailsDto = {
+const apartmentDetails = {
   type: "object",
   properties: {
-    ...apartmentDto.properties,
+    ...apartment.properties,
     description: { type: "string", example: "Spacious ground-floor apartment." },
   },
 } as const;
 
-// Paginated envelope returned by both the list and search endpoints.
 const pagedApartments = {
   type: "object",
   properties: {
-    data: { type: "array", items: apartmentDto },
+    data: { type: "array", items: apartment },
     meta: {
       type: "object",
       properties: {
@@ -49,148 +50,132 @@ const pagedApartments = {
   },
 } as const;
 
-// Shared page/limit query parameters.
+const errorBody = {
+  type: "object",
+  properties: { error: { type: "string" } },
+} as const;
+
 const paginationParams = [
   {
     name: "page",
     in: "query",
     required: false,
     schema: { type: "integer", minimum: 1, default: 1 },
-    description: "1-based page number.",
   },
   {
     name: "limit",
     in: "query",
     required: false,
     schema: { type: "integer", minimum: 1, maximum: 50, default: 9 },
-    description: "Items per page (max 50).",
   },
 ] as const;
 
-const errorResponse = {
-  type: "object",
-  properties: { error: { type: "string" } },
-} as const;
-
-const validationErrorResponse = {
-  type: "object",
-  properties: {
-    error: { type: "string", example: "Validation failed" },
-    details: { type: "object" },
-  },
-} as const;
+// Small helpers to keep the paths section compact.
+const json = (schema: unknown) => ({ "application/json": { schema } });
 
 export const openApiDocument = {
   openapi: "3.0.3",
   info: {
-    title: "Nawy Apartments API",
+    title: "Nawy Mini API",
     version: "1.0.0",
     description:
-      "REST API for listing, viewing and creating apartments. Built with Express, TypeScript, Prisma and PostgreSQL.",
+      "Apartment listing API (Express + Prisma + PostgreSQL). Create requires a JWT — log in via `/api/auth/login`, then click **Authorize** and paste the token.",
   },
-  servers: [{ url: "http://localhost:3001", description: "Local development" }],
-  tags: [{ name: "Apartments", description: "Apartment listing, details and creation" }],
+  servers: [{ url: "http://localhost:3001", description: "Local" }],
+  tags: [
+    { name: "Apartments" },
+    { name: "Auth" },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
+    },
+  },
   paths: {
-    "/api/apartments": {
-      get: {
-        tags: ["Apartments"],
-        summary: "List apartments (paginated)",
-        description:
-          "Returns a paginated list of all apartments. Use `GET /api/apartments/search` to filter by a term.",
-        parameters: [...paginationParams],
+    "/api/auth/login": {
+      post: {
+        tags: ["Auth"],
+        summary: "Log in and receive a JWT (valid 1 hour)",
+        requestBody: { required: true, content: json(loginBody) },
         responses: {
           "200": {
-            description: "A page of apartments.",
-            content: { "application/json": { schema: pagedApartments } },
+            description: "Token issued.",
+            content: json({
+              type: "object",
+              properties: { token: { type: "string" } },
+            }),
           },
-          "400": {
-            description: "Invalid query parameters.",
-            content: { "application/json": { schema: validationErrorResponse } },
-          },
-        },
-      },
-      post: {
-        tags: ["Apartments"],
-        summary: "Create an apartment",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: createApartmentBodySchema,
-            },
-          },
-        },
-        responses: {
-          "201": {
-            description: "Apartment created.",
-            content: { "application/json": { schema: apartmentDetailsDto } },
-          },
-          "400": {
-            description: "Validation failed or malformed JSON body.",
-            content: { "application/json": { schema: validationErrorResponse } },
-          },
-          "409": {
-            description: "An apartment with the same unit number already exists.",
-            content: { "application/json": { schema: errorResponse } },
+          "400": { description: "Validation failed.", content: json(errorBody) },
+          "401": {
+            description: "Invalid email or password.",
+            content: json(errorBody),
           },
         },
       },
     },
+
+    "/api/apartments": {
+      get: {
+        tags: ["Apartments"],
+        summary: "List apartments (paginated)",
+        parameters: [...paginationParams],
+        responses: {
+          "200": { description: "A page of apartments.", content: json(pagedApartments) },
+          "400": { description: "Invalid query.", content: json(errorBody) },
+        },
+      },
+      post: {
+        tags: ["Apartments"],
+        summary: "Create an apartment (requires JWT)",
+        security: [{ bearerAuth: [] }],
+        requestBody: { required: true, content: json(createApartmentBody) },
+        responses: {
+          "201": { description: "Created.", content: json(apartmentDetails) },
+          "400": { description: "Validation failed / malformed JSON.", content: json(errorBody) },
+          "401": { description: "Missing or invalid token.", content: json(errorBody) },
+          "409": { description: "Duplicate unit number.", content: json(errorBody) },
+        },
+      },
+    },
+
     "/api/apartments/search": {
       get: {
         tags: ["Apartments"],
         summary: "Search apartments (paginated)",
-        description:
-          "Returns a paginated list of apartments filtered by `search` (matches unit name, unit number or project, case-insensitive). Omitting `search` returns all apartments.",
         parameters: [
           {
             name: "search",
             in: "query",
             required: false,
             schema: { type: "string" },
-            description: "Filter by unit name, unit number or project.",
+            description: "Matches unit name, unit number or project.",
             example: "garden",
           },
           ...paginationParams,
         ],
         responses: {
-          "200": {
-            description: "A page of matching apartments.",
-            content: { "application/json": { schema: pagedApartments } },
-          },
-          "400": {
-            description: "Invalid query parameters.",
-            content: { "application/json": { schema: validationErrorResponse } },
-          },
+          "200": { description: "Matching apartments.", content: json(pagedApartments) },
+          "400": { description: "Invalid query.", content: json(errorBody) },
         },
       },
     },
+
     "/api/apartments/{id}": {
       get: {
         tags: ["Apartments"],
-        summary: "Get apartment details by id",
+        summary: "Get apartment details",
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
             schema: { type: "string", format: "uuid" },
-            description: "Apartment UUID.",
           },
         ],
         responses: {
-          "200": {
-            description: "Apartment details.",
-            content: { "application/json": { schema: apartmentDetailsDto } },
-          },
-          "400": {
-            description: "Invalid UUID.",
-            content: { "application/json": { schema: validationErrorResponse } },
-          },
-          "404": {
-            description: "Apartment not found.",
-            content: { "application/json": { schema: errorResponse } },
-          },
+          "200": { description: "Apartment details.", content: json(apartmentDetails) },
+          "400": { description: "Invalid id.", content: json(errorBody) },
+          "404": { description: "Not found.", content: json(errorBody) },
         },
       },
     },

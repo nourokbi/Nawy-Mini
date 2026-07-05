@@ -26,7 +26,7 @@ A full-stack apartment listing application: browse apartments, view details, sea
 - **Add apartment** — a create form, protected by login (only authenticated users can add).
 - **Authentication** — login with fixed credentials issues a JWT; the create endpoint is protected server-side.
 - **Responsive UI** — works on mobile and desktop; brand-themed (Nawy navy & orange).
-- **Image fallback** — a local placeholder is shown when an apartment image is missing or fails to load.
+- **Image fallback** — a local placeholder is shown when an apartment image is missing.
 - **Resilient frontend** — if the backend is unreachable, pages still render (empty states instead of crashes).
 - **Interactive API docs** — Swagger UI served by the backend.
 
@@ -42,7 +42,7 @@ From the repository root:
 docker compose up --build
 ```
 
-This builds and starts three containers — **database**, **backend**, and **frontend** — and seeds the database with 18 sample apartments on first run. The first build takes a few minutes.
+This builds and starts three containers — **database**, **backend**, and **frontend** — and seeds the database with 21 sample apartments on first run. The first build takes a few minutes.
 
 ### Access
 
@@ -68,7 +68,7 @@ docker compose down       # stop and remove containers (keeps the database)
 docker compose down -v     # also remove the database volume (fresh start + re-seed)
 ```
 
-> **Seeding is idempotent** — the 18 sample apartments are inserted only when the database is empty, so any apartments you create through the app survive restarts. Use `down -v` to reset to seed data.
+> **Seeding is idempotent** — the 21 sample apartments are inserted only when the database is empty, so any apartments you create through the app survive restarts. Use `down -v` to reset to seed data.
 
 ---
 
@@ -90,7 +90,7 @@ Base path: `/api`
 ```json
 {
   "data": [ /* apartments */ ],
-  "meta": { "page": 1, "limit": 9, "total": 18, "totalPages": 2 }
+  "meta": { "page": 1, "limit": 9, "total": 21, "totalPages": 3 }
 }
 ```
 
@@ -116,7 +116,7 @@ Base path: `/api`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/api/auth/login` | Body `{ email, password }`. Returns `{ token }` (JWT, 5-min expiry) on success, `401` otherwise. |
+| `POST` | `/api/auth/login` | Body `{ email, password }` (password ≥ 6 chars). Returns `{ token }` (JWT, 1-hour expiry) on success, `401` otherwise. |
 
 ### Error responses
 
@@ -155,7 +155,7 @@ cd NawyApartment.Backend
 npm install
 # create .env (see Environment Variables below)
 npx prisma migrate deploy   # apply migrations
-npx prisma db seed          # seed 18 apartments (only if empty)
+npx prisma db seed          # seed 21 apartments (only if empty)
 npm run dev                 # starts on http://localhost:3001
 ```
 
@@ -213,7 +213,12 @@ Nawy Assign/
 │       └── docs/                 # OpenAPI/Swagger spec
 └── NawyApartment.Frontend/       # Next.js app (App Router)
     ├── Dockerfile
-    └── src/app/                  # pages, components, api client
+    └── src/
+        ├── app/                  # routes (pages + layouts) only
+        ├── components/           # UI grouped by area (ui, layout, login, apartments)
+        ├── api/                  # backend calls (apartments, auth)
+        ├── types/                # shared TypeScript types
+        └── lib/                  # session, helpers, utils
 ```
 
 ---
@@ -238,7 +243,6 @@ This demonstrates route protection without the scope of a full auth system.
 - **Real authentication** — user accounts, registration, password hashing, refresh tokens.
 - **Search at scale** — add a PostgreSQL `pg_trgm` GIN index so `ILIKE` searches use an index instead of a sequential scan.
 - **Testing** — unit/integration tests for the API and frontend.
-- **CI/CD** — automated build, test, and lint on push.
 - **Image uploads** — allow uploading apartment images (e.g. to object storage) instead of URLs.
 - **Edit / delete apartments** — complete the CRUD surface.
 

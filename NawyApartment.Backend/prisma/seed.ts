@@ -8,7 +8,7 @@ type ApartmentSeed = {
   unitName: string;
   unitNumber: string;
   project: string;
-  description: string;
+  description?: string;
   price: number; // EGP
   bedrooms: number;
   bathrooms: number;
@@ -269,6 +269,45 @@ const apartments: ApartmentSeed[] = [
     imageUrl:
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=1200&q=80",
     address: "District 5, 5th Settlement, New Cairo, Cairo",
+  },
+  {
+    unitName: "Townhouse",
+    unitNumber: "MV-iCity-TH-330",
+    project: "Mountain View iCity",
+    description:
+      "Corner townhouse with a private garden and roof in a gated iCity phase with lagoons and a clubhouse.",
+    price: 15_700_000,
+    bedrooms: 4,
+    bathrooms: 4,
+    area: 265,
+    imageUrl:
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80",
+    address: "Mountain View iCity, 5th Settlement, New Cairo, Cairo",
+  },
+  {
+    unitName: "Standard Apartment",
+    unitNumber: "Zayed-Greens-A2-118",
+    project: "Zayed Greens",
+    description:
+      "Bright two-bedroom overlooking central greenery, minutes from Sphinx Airport and Sheikh Zayed's retail hubs.",
+    price: 6_900_000,
+    bedrooms: 2,
+    bathrooms: 2,
+    area: 128,
+    imageUrl:
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&q=80",
+    address: "Zayed Greens, Sheikh Zayed City, Giza",
+  },
+  {
+    // Intentionally missing image and description (edge case for the UI).
+    unitName: "Studio",
+    unitNumber: "Sample-NoData-000",
+    project: "Bloomfields",
+    price: 2_500_000,
+    bedrooms: 1,
+    bathrooms: 1,
+    area: 55,
+    // no imageUrl, no address
   },
 ];
 

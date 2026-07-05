@@ -1,0 +1,41 @@
+# Nawy Mini API — sample requests
+# Use with the VS Code "REST Client" extension (or JetBrains HTTP client).
+# Click "Send Request" above each block.
+
+@baseUrl = http://localhost:3001
+# For the Docker stack instead, use: http://localhost:3101
+
+### List apartments (paginated)
+GET {{baseUrl}}/api/apartments?page=1&limit=9
+
+### Search apartments (by unit name / number / project)
+GET {{baseUrl}}/api/apartments/search?search=garden
+
+### Get a single apartment (replace the id with a real one)
+GET {{baseUrl}}/api/apartments/REPLACE_WITH_APARTMENT_ID
+
+### Log in -> returns a JWT (valid 1 hour)
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "Admin@nawy.com",
+  "password": "Admin@123"
+}
+
+### Create an apartment (uses the token from the login request above)
+POST {{baseUrl}}/api/apartments
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "unitName": "Sample Unit",
+  "unitNumber": "SAMPLE-001",
+  "project": "Sample Project",
+  "description": "Created from the .http file.",
+  "price": 5000000,
+  "bedrooms": 2,
+  "bathrooms": 1,
+  "area": 120
+}

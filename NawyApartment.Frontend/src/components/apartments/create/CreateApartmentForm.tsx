@@ -49,11 +49,11 @@ export default function CreateApartmentForm() {
           unitName: form.unitName,
           unitNumber: form.unitNumber,
           project: form.project,
-          description: form.description,
           price: Number(form.price),
           bedrooms: Number(form.bedrooms),
           bathrooms: Number(form.bathrooms),
           area: Number(form.area),
+          ...(form.description ? { description: form.description } : {}),
           ...(form.imageUrl ? { imageUrl: form.imageUrl } : {}),
           ...(form.address ? { address: form.address } : {}),
         },
@@ -121,14 +121,12 @@ export default function CreateApartmentForm() {
             className="text-sm font-medium text-[#1E4164]"
           >
             Description
-            <span className="text-red-500"> *</span>
           </label>
           <textarea
             id="description"
             rows={3}
             value={form.description}
             onChange={(e) => update("description", e.target.value)}
-            required
             className="w-full rounded-md border border-gray-400 px-3 py-2 text-sm outline-none focus:border-[#1E4164] focus:ring-1 focus:ring-[#1E4164]"
           />
         </div>

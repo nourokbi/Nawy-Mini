@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import type { Apartment, PaginatedApartments } from "@/app/apartments/types";
+import type { Apartment, PaginatedApartments } from "@/types/apartments";
 import { ApiError } from "./error";
 import { SERVER_API, CLIENT_API } from "./config";
 
@@ -11,7 +11,7 @@ export type CreateApartmentInput = {
   unitName: string;
   unitNumber: string;
   project: string;
-  description: string;
+  description?: string;
   price: number;
   bedrooms: number;
   bathrooms: number;
@@ -36,7 +36,7 @@ export async function getApartments({
   if (page && page > 1) url.searchParams.set("page", String(page));
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: "no-store" });
     if (res.ok) {
       return res.json();
     }
@@ -87,7 +87,7 @@ export async function createApartment(
   });
 
   if (!res.ok) {
-    const data = await res.json() || {};
+    const data = (await res.json()) || {};
     throw new ApiError(res.status, data.error ?? "Failed to create apartment.");
   }
   return res.json();

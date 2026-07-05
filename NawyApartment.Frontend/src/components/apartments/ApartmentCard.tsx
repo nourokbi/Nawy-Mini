@@ -1,18 +1,13 @@
 import { Bed, Bath, Ruler } from "lucide-react";
-import { Apartment } from "@/app/apartments/types";
+import { Apartment } from "@/types/apartments";
+import { formatPrice, resolveImageSrc } from "@/lib/helpers";
 
 type ApartmentCardProps = {
   apartment: Apartment;
 };
 
-// EGP price like "9,500,000 EGP"
-const priceFormatter = new Intl.NumberFormat("en-EG");
-
-// Local placeholder shown when the image URL is missing or fails to load.
-const FALLBACK_SRC = "/apartment-placeholder.svg";
-
 export default function ApartmentCard({ apartment }: ApartmentCardProps) {
-  const src = apartment.imageUrl?.trim() ? apartment.imageUrl : FALLBACK_SRC;
+  const src = resolveImageSrc(apartment.imageUrl);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
@@ -56,7 +51,7 @@ export default function ApartmentCard({ apartment }: ApartmentCardProps) {
         </div>
 
         <p className="mt-auto text-xl font-bold text-black">
-          {priceFormatter.format(apartment.price)} EGP
+          {formatPrice(apartment.price)}
         </p>
       </div>
     </article>

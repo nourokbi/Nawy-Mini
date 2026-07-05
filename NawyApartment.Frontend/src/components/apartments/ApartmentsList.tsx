@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Apartment } from "@/app/apartments/types";
+import { Apartment } from "@/types/apartments";
 import ApartmentCard from "./ApartmentCard";
 
 type ApartmentsListProps = {

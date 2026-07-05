@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const LOGIN_URL = "http://localhost:3001/api/auth/login";
+// Browser-facing backend URL. Set NEXT_PUBLIC_API_BASE at build time (Docker)
+// to point at the backend's published host port; defaults to local dev.
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001";
+const LOGIN_URL = `${API_BASE}/api/auth/login`;
 
 export default function LoginPage() {
   const router = useRouter();

@@ -272,13 +272,17 @@ const apartments: ApartmentSeed[] = [
   },
 ];
 
-// Seeding 18 apartments into the database
-// making sure to delete any existing apartments first to avoid duplicates
+// Idempotent seed: only insert the sample apartments when the table is empty,
+// so existing data is preserved across restarts (e.g. Docker container restarts).
 
 async function main() {
-  console.log(`Seeding ${apartments.length} apartments...`);
+  const existing = await prisma.apartment.count();
+  if (existing > 0) {
+    console.log(`Database already has ${existing} apartments — skipping seed.`);
+    return;
+  }
 
-  await prisma.apartment.deleteMany();
+  console.log(`Seeding ${apartments.length} apartments...`);
 
   const result = await prisma.apartment.createMany({ data: apartments });
 

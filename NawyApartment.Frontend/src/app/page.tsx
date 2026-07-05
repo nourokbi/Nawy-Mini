@@ -19,7 +19,7 @@ export default function Home() {
         {/* Hero content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
           <h1 className="max-w-3xl text-4xl font-bold capitalize text-white sm:text-5xl">
-            Find your next home
+            Find your dream home
           </h1>
           <p className="mt-4 max-w-xl text-lg text-gray-100">
             Browse curated apartments across Egypt&apos;s top compounds, or list

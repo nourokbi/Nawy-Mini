@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Container from "@/app/components/Container";
 
-const CREATE_URL = "http://localhost:3001/api/apartments";
+// Browser-facing backend URL (see login page). Defaults to local dev.
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001";
+const CREATE_URL = `${API_BASE}/api/apartments`;
 
 // Read the JWT saved by the login page.
 function getToken() {

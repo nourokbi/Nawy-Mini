@@ -13,7 +13,9 @@ const priceFormatter = new Intl.NumberFormat("en-EG");
 const FALLBACK_SRC = "/apartment-placeholder.svg";
 
 export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
-  const imageSrc = apartment.imageUrl?.trim() ? apartment.imageUrl : FALLBACK_SRC;
+  const imageSrc = apartment.imageUrl?.trim()
+    ? apartment.imageUrl
+    : FALLBACK_SRC;
 
   const specs = [
     { icon: Bed, label: "Bedrooms", value: apartment.bedrooms },
@@ -55,7 +57,7 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
             {apartment.address || "Address not provided"}
           </p>
 
-          <p className="mt-4 text-3xl font-bold text-[#FF5E00]">
+          <p className="mt-4 text-3xl font-bold text-black">
             {priceFormatter.format(apartment.price)} EGP
           </p>
 

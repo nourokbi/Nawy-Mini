@@ -1,0 +1,56 @@
+# Run the whole stack with:  docker compose up --build
+# Frontend -> http://localhost:3100   Backend -> http://localhost:3101
+# (Different host ports than local dev's 3000/3001, so both can run at once.)
+
+services:
+  # --- PostgreSQL database ---
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nawy-db
+    volumes:
+      - db-data:/var/lib/postgresql/data # persist data across restarts
+    healthcheck:
+      # backend waits until this reports the DB is ready to accept connections
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nawy-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- Express + Prisma API ---
+  backend:
+    build: ./NawyApartment.Backend
+    environment:
+      # host is the service name "db" (Docker's internal network), not localhost
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/nawy-db?schema=public
+      PORT: 3001
+      JWT_SECRET: your_jwt_secret_key
+      AUTH_EMAIL: Admin@nawy.com
+      AUTH_PASSWORD: Admin@123
+      # must match the frontend's browser origin (its published host port)
+      CORS_ORIGIN: http://localhost:3100
+    ports:
+      - "3101:3001" # host 3101 -> container 3001 (browser reaches it here)
+    depends_on:
+      db:
+        condition: service_healthy # don't start until the DB is ready
+
+  # --- Next.js frontend ---
+  frontend:
+    build:
+      context: ./NawyApartment.Frontend
+      args:
+        # browser-facing backend URL (baked into the client bundle at build time)
+        NEXT_PUBLIC_API_BASE: http://localhost:3101
+    environment:
+      # Server-side (RSC) fetches go container-to-container via the service name.
+      API_URL: http://backend:3001/api/apartments
+    ports:
+      - "3100:3000" # host 3100 -> container 3000
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

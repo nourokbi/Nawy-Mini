@@ -81,7 +81,10 @@ export const openApiDocument = {
     description:
       "Apartment listing API (Express + Prisma + PostgreSQL). Create requires a JWT — log in via `/api/auth/login`, then click **Authorize** and paste the token.",
   },
-  servers: [{ url: "http://localhost:3001", description: "Local" }],
+  // Relative to wherever Swagger UI is loaded (same-origin as the API), so
+  // "Try it out" works on any host/port — Docker's 3101 or local dev's 3001 —
+  // with no CORS. Paths already carry the /api prefix.
+  servers: [{ url: "/", description: "Current host" }],
   tags: [
     { name: "Apartments" },
     { name: "Auth" },

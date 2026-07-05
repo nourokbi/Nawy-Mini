@@ -3,7 +3,7 @@ import ApartmentsHeader from "./components/ApartmentsHeader";
 import ApartmentsList from "./components/ApartmentsList";
 import ApartmentsPagination from "./components/ApartmentsPagination";
 import ApartmentsEmpty from "./components/ApartmentsEmpty";
-import { getApartments } from "./api";
+import { getApartments } from "@/api/apartments";
 import Container from "../components/Container";
 
 export default async function Apartments({

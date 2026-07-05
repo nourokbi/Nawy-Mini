@@ -1,5 +1,5 @@
 import Container from "@/app/components/Container";
-import { getApartment } from "../api";
+import { getApartment } from "@/api/apartments";
 import ApartmentDetails from "../components/ApartmentDetails";
 
 type ApartmentDetailsPageProps = {

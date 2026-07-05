@@ -5,18 +5,13 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Container from "@/app/components/Container";
+import { getToken, clearToken } from "@/lib/session";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
+import { createApartment } from "@/api/apartments";
+import { ApiError } from "@/api/error";
 
-// Browser-facing backend URL (see login page). Defaults to local dev.
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001";
-const CREATE_URL = `${API_BASE}/api/apartments`;
-
-// Read the JWT saved by the login page.
-function getToken() {
-  return document.cookie
-    .split("; ")
-    .find((c) => c.startsWith("nawy_token="))
-    ?.split("=")[1];
-}
+// Send unauthenticated users to login, remembering to come back here after.
+const LOGIN_REDIRECT = `/login?redirect=${encodeURIComponent("/apartments/create")}`;
 
 const initialForm = {
   unitName: "",
@@ -33,6 +28,9 @@ const initialForm = {
 
 export default function CreateApartmentPage() {
   const router = useRouter();
+  // Gate on entry: redirects to login if not authenticated (remembering to
+  // return here). `authed` is false until the client-side check passes.
+  const authed = useRequireAuth("/apartments/create");
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,51 +45,46 @@ export default function CreateApartmentPage() {
     try {
       const token = getToken();
       if (!token) {
-        router.push("/login");
+        router.replace(LOGIN_REDIRECT);
         return;
       }
 
-      const body = {
-        unitName: form.unitName,
-        unitNumber: form.unitNumber,
-        project: form.project,
-        description: form.description,
-        price: Number(form.price),
-        bedrooms: Number(form.bedrooms),
-        bathrooms: Number(form.bathrooms),
-        area: Number(form.area),
-        ...(form.imageUrl ? { imageUrl: form.imageUrl } : {}),
-        ...(form.address ? { address: form.address } : {}),
-      };
-
-      const res = await fetch(CREATE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const created = await createApartment(
+        {
+          unitName: form.unitName,
+          unitNumber: form.unitNumber,
+          project: form.project,
+          description: form.description,
+          price: Number(form.price),
+          bedrooms: Number(form.bedrooms),
+          bathrooms: Number(form.bathrooms),
+          area: Number(form.area),
+          ...(form.imageUrl ? { imageUrl: form.imageUrl } : {}),
+          ...(form.address ? { address: form.address } : {}),
         },
-        body: JSON.stringify(body),
-      });
-
-      // Token missing/expired -> back to login.
-      if (res.status === 401) {
-        router.push("/login");
-        return;
-      }
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error ?? "Failed to create apartment.");
-        return;
-      }
-
-      const created = await res.json();
+        token,
+      );
       router.push(`/apartments/${created.id}`);
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      // Token expired mid-session -> clear it and send back to login.
+      if (err instanceof ApiError && err.status === 401) {
+        clearToken();
+        router.replace(LOGIN_REDIRECT);
+        return;
+      }
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
   }
+
+  // While the auth check runs (or during the redirect), render nothing so the
+  // form never flashes for unauthenticated users.
+  if (!authed) return null;
 
   return (
     <Container>

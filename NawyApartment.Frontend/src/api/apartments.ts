@@ -1,9 +1,29 @@
 import { notFound } from "next/navigation";
-import { Apartment, PaginatedApartments } from "./types";
+import type { Apartment, PaginatedApartments } from "@/app/apartments/types";
+import { ApiError } from "./error";
 
-// Backend base URL. Override with API_URL in .env for other environments.
-const API_BASE = 
-  process.env.API_URL ?? "http://localhost:3001/api/apartments";
+// Server-side backend URL. Server (RSC) reads reach the backend over the
+// internal network in Docker. (Centralized config comes in a later step.)
+const API_BASE = process.env.API_URL ?? "http://localhost:3001/api/apartments";
+
+// Browser-facing backend URL, used for the client-side create mutation.
+const CLIENT_API_BASE =
+  (process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001") +
+  "/api/apartments";
+
+// Fields accepted when creating an apartment.
+export type CreateApartmentInput = {
+  unitName: string;
+  unitNumber: string;
+  project: string;
+  description: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  imageUrl?: string;
+  address?: string;
+};
 
 /**
  * Fetch a page of apartments, optionally filtered by a search term.
@@ -12,8 +32,6 @@ const API_BASE =
  * `{ data, meta }` envelope, so the caller gets the paginated result either way):
  *   - no term  -> GET /apartments          (full list)
  *   - term     -> GET /apartments/search   (filtered)
- *
- * `page` maps to the backend's page param; `limit` is left to the backend default.
  */
 export async function getApartments({
   search,
@@ -61,6 +79,31 @@ export async function getApartment(id: string): Promise<Apartment> {
   // -> render the not-found page rather than throwing.
   if (!res.ok) {
     notFound();
+  }
+  return res.json();
+}
+
+/**
+ * Create an apartment (client-side, requires a JWT).
+ * Returns the created apartment; throws ApiError on failure
+ * (e.g. 401 expired token, 409 duplicate unit number).
+ */
+export async function createApartment(
+  input: CreateApartmentInput,
+  token: string,
+): Promise<Apartment> {
+  const res = await fetch(CLIENT_API_BASE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new ApiError(res.status, data.error ?? "Failed to create apartment.");
   }
   return res.json();
 }

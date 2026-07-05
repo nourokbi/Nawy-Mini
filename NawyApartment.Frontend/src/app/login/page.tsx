@@ -4,11 +4,23 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { setToken } from "@/lib/session";
+import { login } from "@/api/auth";
+import { ApiError } from "@/api/error";
 
-// Browser-facing backend URL. Set NEXT_PUBLIC_API_BASE at build time (Docker)
-// to point at the backend's published host port; defaults to local dev.
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001";
-const LOGIN_URL = `${API_BASE}/api/auth/login`;
+// Where to send the user after login:
+// 1) an explicit ?redirect= (used by the create gate), else
+// 2) the last page they were on (tracked by RouteTracker), else
+// 3) the landing page.
+function resolveRedirect(): string {
+  const param = new URLSearchParams(window.location.search).get("redirect");
+  if (param && param.startsWith("/")) return param;
+
+  const last = sessionStorage.getItem("lastPath");
+  if (last && last.startsWith("/") && last !== "/login") return last;
+
+  return "/";
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,23 +33,15 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch(LOGIN_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        setError("Invalid email or password.");
-        return;
-      }
-
-      const { token } = await res.json();
-      // Store the token so the create route can use it (matches the 5m expiry).
-      document.cookie = `nawy_token=${token}; path=/; max-age=3600`;
-      router.push("/apartments/create");
-    } catch {
-      setError("Something went wrong. Please try again.");
+      const { token } = await login(email, password);
+      setToken(token);
+      router.push(resolveRedirect());
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setLoading(false);
     }

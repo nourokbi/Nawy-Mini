@@ -68,10 +68,10 @@ export async function getApartment(id: string): Promise<Apartment> {
   return res.json();
 }
 
-/**
- * Create an apartment (client-side, requires a JWT).
- * Returns the created apartment; throws ApiError on failure
- * (e.g. 401 expired token, 409 duplicate unit number).
+/*
+  Create an apartment (client-side, requires a JWT).
+  Returns the created apartment; throws ApiError on failure
+  (e.g. 401 expired token, 409 duplicate unit number).
  */
 export async function createApartment(
   apartment: CreateApartmentInput,
@@ -88,7 +88,17 @@ export async function createApartment(
 
   if (!res.ok) {
     const data = (await res.json()) || {};
-    throw new ApiError(res.status, data.error ?? "Failed to create apartment.");
+    // On a validation error the backend sends a `details` tree; surface the
+    // first field's first message (prefixed with the field name so it's clear
+    // which of the fields failed) instead of the generic "Validation failed".
+    const firstEntry = Object.entries<{ errors?: string[] }>(
+      data.details?.properties ?? {},
+    )[0];
+    const message =
+      firstEntry && firstEntry[1]?.errors?.[0]
+        ? `${firstEntry[0]}: ${firstEntry[1].errors[0]}`
+        : (data.error ?? "Failed to create apartment.");
+    throw new ApiError(res.status, message);
   }
   return res.json();
 }

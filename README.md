@@ -36,9 +36,11 @@ A full-stack apartment listing application: browse apartments, view details, sea
 
 **Prerequisite:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
 
-From the repository root:
+Clone the repository, then start everything with one command:
 
 ```bash
+git clone https://github.com/nourokbi/Nawy-Mini.git
+cd Nawy-Mini
 docker compose up --build
 ```
 

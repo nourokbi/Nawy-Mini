@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Container from "@/app/components/Container";
+import Container from "@/components/layout/Container";
 
 export default function ApartmentNotFound() {
   return (

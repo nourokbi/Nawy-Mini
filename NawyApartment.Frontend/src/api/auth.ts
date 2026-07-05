@@ -1,8 +1,5 @@
 import { ApiError } from "./error";
-
-// Browser-facing backend URL. In Docker this points at the backend's published
-// host port; defaults to local dev. (Centralized config comes in a later step.)
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001";
+import { CLIENT_API } from "./config";
 
 type LoginResponse = { token: string };
 
@@ -14,7 +11,7 @@ export async function login(
   email: string,
   password: string,
 ): Promise<LoginResponse> {
-  const res = await fetch(`${API_BASE}/api/auth/login`, {
+  const res = await fetch(`${CLIENT_API}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

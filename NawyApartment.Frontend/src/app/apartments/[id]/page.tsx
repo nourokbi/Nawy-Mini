@@ -1,6 +1,6 @@
-import Container from "@/app/components/Container";
+import Container from "@/components/layout/Container";
 import { getApartment } from "@/api/apartments";
-import ApartmentDetails from "../components/ApartmentDetails";
+import ApartmentDetails from "@/components/apartments/[id]/ApartmentDetails";
 
 type ApartmentDetailsPageProps = {
   params: Promise<{ id: string }>;

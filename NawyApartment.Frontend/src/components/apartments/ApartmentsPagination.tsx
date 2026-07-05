@@ -10,7 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import type { ApartmentsMeta } from "../types";
+import type { ApartmentsMeta } from "@/app/apartments/types";
 
 type ApartmentsPaginationProps = {
   meta: ApartmentsMeta;

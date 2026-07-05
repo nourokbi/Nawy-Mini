@@ -47,10 +47,10 @@ This builds and starts three containers — **database**, **backend**, and **fro
 ### Access
 
 | Service | URL |
-|---|---|
-| **Frontend (app)** | http://localhost:3100 |
-| **Backend (API)** | http://localhost:3101 |
-| **API docs (Swagger)** | http://localhost:3101/api/docs |
+| --- | --- |
+| **Frontend (app)** | <http://localhost:3100> |
+| **Backend (API)** | <http://localhost:3101> |
+| **API docs (Swagger)** | <http://localhost:3101/api/docs> |
 
 > These host ports (**3100 / 3101**) are intentionally different from the local-dev ports (3000 / 3001), so you can run the containers and a local dev server at the same time.
 
@@ -188,8 +188,8 @@ The frontend defaults to calling the backend at `http://localhost:3001`.
 
 | Variable | Scope | Description |
 |---|---|---|
-| `API_URL` | server (runtime) | Backend base URL for server-side (RSC) fetches — e.g. `http://backend:3001/api/apartments` in Docker |
-| `NEXT_PUBLIC_API_BASE` | browser (build-time) | Backend base URL for client-side fetches (login/create) — e.g. `http://localhost:3101` in Docker |
+| `API_URL` | server (runtime) | Backend **root** URL for server-side (RSC) fetches — e.g. `http://backend:3001` in Docker. The app appends `/api/...`. |
+| `NEXT_PUBLIC_API_BASE` | browser (build-time) | Backend **root** URL for client-side fetches (login/create) — e.g. `http://localhost:3101` in Docker |
 
 > In Docker these are set for you in `docker-compose.yml`. Note that `NEXT_PUBLIC_*` values are baked into the client bundle **at build time**, so changing them requires a rebuild (`docker compose up --build`).
 
@@ -241,7 +241,5 @@ This demonstrates route protection without the scope of a full auth system.
 - **CI/CD** — automated build, test, and lint on push.
 - **Image uploads** — allow uploading apartment images (e.g. to object storage) instead of URLs.
 - **Edit / delete apartments** — complete the CRUD surface.
-- **Observability** — request logging, health-check endpoint, graceful shutdown.
-- **Pagination UX** — surface total counts and page controls more prominently.
 
 ---

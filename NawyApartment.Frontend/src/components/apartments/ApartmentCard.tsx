@@ -1,5 +1,5 @@
 import { Bed, Bath, Ruler } from "lucide-react";
-import { Apartment } from "../types";
+import { Apartment } from "@/app/apartments/types";
 
 type ApartmentCardProps = {
   apartment: Apartment;

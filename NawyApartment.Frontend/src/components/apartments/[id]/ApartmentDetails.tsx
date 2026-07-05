@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Bed, Bath, Ruler, MapPin, Hash } from "lucide-react";
-import { Apartment } from "../types";
+import { Apartment } from "@/app/apartments/types";
 
 type ApartmentDetailsProps = {
   apartment: Apartment;

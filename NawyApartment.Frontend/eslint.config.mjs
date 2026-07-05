@@ -5,6 +5,14 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    rules: {
+      // This rule flags a standard, correct pattern (check login status when a
+      // page loads, then update state to show the content). We use it on
+      // purpose, so turn the rule off.
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

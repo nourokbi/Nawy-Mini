@@ -1,15 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Apartment, PaginatedApartments } from "@/app/apartments/types";
 import { ApiError } from "./error";
+import { SERVER_API, CLIENT_API } from "./config";
 
-// Server-side backend URL. Server (RSC) reads reach the backend over the
-// internal network in Docker. (Centralized config comes in a later step.)
-const API_BASE = process.env.API_URL ?? "http://localhost:3001/api/apartments";
-
-// Browser-facing backend URL, used for the client-side create mutation.
-const CLIENT_API_BASE =
-  (process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:3001") +
-  "/api/apartments";
+const API_BASE = `${SERVER_API}/apartments`;
+const CLIENT_API_BASE = `${CLIENT_API}/apartments`;
 
 // Fields accepted when creating an apartment.
 export type CreateApartmentInput = {
@@ -25,14 +20,7 @@ export type CreateApartmentInput = {
   address?: string;
 };
 
-/**
- * Fetch a page of apartments, optionally filtered by a search term.
- *
- * Branches between the two backend endpoints (both return the same
- * `{ data, meta }` envelope, so the caller gets the paginated result either way):
- *   - no term  -> GET /apartments          (full list)
- *   - term     -> GET /apartments/search   (filtered)
- */
+// Fetch apartments with optional search term
 export async function getApartments({
   search,
   page,
@@ -48,14 +36,11 @@ export async function getApartments({
   if (page && page > 1) url.searchParams.set("page", String(page));
 
   try {
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url);
     if (res.ok) {
-      // Both endpoints return the same envelope: { data, meta }
       return res.json();
     }
-  } catch {
-    // Backend unreachable — fall through to the empty result below.
-  }
+  } catch {}
 
   // On any failure (backend down or error response) return an empty page so
   // the listing page still renders instead of crashing.
@@ -89,7 +74,7 @@ export async function getApartment(id: string): Promise<Apartment> {
  * (e.g. 401 expired token, 409 duplicate unit number).
  */
 export async function createApartment(
-  input: CreateApartmentInput,
+  apartment: CreateApartmentInput,
   token: string,
 ): Promise<Apartment> {
   const res = await fetch(CLIENT_API_BASE, {
@@ -98,11 +83,11 @@ export async function createApartment(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(input),
+    body: JSON.stringify(apartment),
   });
 
   if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
+    const data = await res.json() || {};
     throw new ApiError(res.status, data.error ?? "Failed to create apartment.");
   }
   return res.json();

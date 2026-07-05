@@ -46,7 +46,8 @@ services:
         NEXT_PUBLIC_API_BASE: http://localhost:3101
     environment:
       # Server-side (RSC) fetches go container-to-container via the service name.
-      API_URL: http://backend:3001/api/apartments
+      # (The app appends /api/... to this root.)
+      API_URL: http://backend:3001
     ports:
       - "3100:3000" # host 3100 -> container 3000
     depends_on:

@@ -1,10 +1,10 @@
-import ApartmentsActions from "./components/ApartmentsActions";
-import ApartmentsHeader from "./components/ApartmentsHeader";
-import ApartmentsList from "./components/ApartmentsList";
-import ApartmentsPagination from "./components/ApartmentsPagination";
-import ApartmentsEmpty from "./components/ApartmentsEmpty";
+import ApartmentsActions from "@/components/apartments/ApartmentsActions";
+import ApartmentsHeader from "@/components/apartments/ApartmentsHeader";
+import ApartmentsList from "@/components/apartments/ApartmentsList";
+import ApartmentsPagination from "@/components/apartments/ApartmentsPagination";
+import ApartmentsEmpty from "@/components/apartments/ApartmentsEmpty";
 import { getApartments } from "@/api/apartments";
-import Container from "../components/Container";
+import Container from "@/components/layout/Container";
 
 export default async function Apartments({
   searchParams,

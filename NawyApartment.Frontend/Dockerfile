@@ -24,4 +24,5 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+# Print a clear, host-facing URL before Next's own (container-internal) log line.
+CMD ["sh", "-c", "echo \"Frontend is running → ${APP_URL:-http://localhost:3000}\" && node server.js"]

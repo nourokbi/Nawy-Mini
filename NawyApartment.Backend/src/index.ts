@@ -8,6 +8,9 @@ import { openApiDocument } from "./docs/openapi.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+// Public, browser-facing URL. In Docker it's the host port (3101); locally it
+// falls back to the container/local port so dev logs stay correct.
+const PUBLIC_URL = process.env.PUBLIC_URL ?? `http://localhost:${PORT}`;
 
 // Allow the Next.js frontend to call the API cross-origin (sends the
 // Authorization header on login/create). Origin configurable via env.
@@ -38,5 +41,7 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log("Backend API is running");
+  console.log(`   → API:      ${PUBLIC_URL}/api`);
+  console.log(`   → API docs: ${PUBLIC_URL}/api/docs`);
 });

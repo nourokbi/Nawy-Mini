@@ -2,9 +2,9 @@ import { z } from "zod";
 
 // Validating the request body for creating a new apartment
 export const createApartmentSchema = z.object({
-  unitName: z.string().trim().min(1, "unitName is required"),
-  unitNumber: z.string().trim().min(1, "unitNumber is required"),
-  project: z.string().trim().min(1, "project is required"),
+  unitName: z.string().trim().min(1, "unitName is required").max(100, "unitName must be at most 100 characters"),
+  unitNumber: z.string().trim().min(1, "unitNumber is required").max(50, "unitNumber must be at most 50 characters"),
+  project: z.string().trim().min(1, "project is required").max(100, "project must be at most 100 characters"),
   description: z.string().trim().optional(),
   price: z.number().int().min(1000).max(1000000000),
   bedrooms: z.number().int().min(0).max(20),

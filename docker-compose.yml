@@ -31,6 +31,8 @@ services:
       AUTH_PASSWORD: Admin@123
       # must match the frontend's browser origin (its published host port)
       CORS_ORIGIN: http://localhost:3100
+      # browser-facing URL used only for accurate startup log lines
+      PUBLIC_URL: http://localhost:3101
     ports:
       - "3101:3001" # host 3101 -> container 3001 (browser reaches it here)
     depends_on:
@@ -48,6 +50,8 @@ services:
       # Server-side (RSC) fetches go container-to-container via the service name.
       # (The app appends /api/... to this root.)
       API_URL: http://backend:3001
+      # browser-facing URL used only for the accurate startup log line
+      APP_URL: http://localhost:3100
     ports:
       - "3100:3000" # host 3100 -> container 3000
     depends_on:

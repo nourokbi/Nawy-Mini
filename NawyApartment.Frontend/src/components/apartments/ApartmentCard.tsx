@@ -19,14 +19,14 @@ export default function ApartmentCard({ apartment }: ApartmentCardProps) {
           alt={apartment.unitName}
           className="h-full w-full object-cover"
         />
-        <span className="absolute left-3 top-3 rounded-full bg-[#1E4164] px-3 py-1 text-xs font-medium text-white">
+        <span className="absolute left-3 top-3 rounded-full bg-brand px-3 py-1 text-xs font-medium text-white">
           {apartment.project}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col space-y-3 p-4">
         <div>
-          <h2 className="text-lg font-semibold text-[#1E4164]">
+          <h2 className="text-lg font-semibold text-brand">
             {apartment.unitName}
           </h2>
           <p className="truncate text-sm text-gray-500">
@@ -37,15 +37,15 @@ export default function ApartmentCard({ apartment }: ApartmentCardProps) {
         {/* Specs */}
         <div className="flex items-center gap-4 text-sm text-gray-600">
           <span className="flex items-center gap-1.5">
-            <Bed className="h-4 w-4 text-[#1E4164]" />
+            <Bed className="h-4 w-4 text-brand" />
             {apartment.bedrooms} Beds
           </span>
           <span className="flex items-center gap-1.5">
-            <Bath className="h-4 w-4 text-[#1E4164]" />
+            <Bath className="h-4 w-4 text-brand" />
             {apartment.bathrooms} Baths
           </span>
           <span className="flex items-center gap-1.5">
-            <Ruler className="h-4 w-4 text-[#1E4164]" />
+            <Ruler className="h-4 w-4 text-brand" />
             {apartment.area} m²
           </span>
         </div>

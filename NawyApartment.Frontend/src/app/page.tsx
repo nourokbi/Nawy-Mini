@@ -29,7 +29,7 @@ export default function Home() {
           <div className="mt-8 flex flex-row gap-3 sm:gap-4">
             <Link
               href="/apartments"
-              className="rounded-lg bg-[#FF5E00] px-4 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-[#e65400] sm:px-6 sm:py-3 sm:text-base"
+              className="rounded-lg bg-brand-accent px-4 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-brand-accent-hover sm:px-6 sm:py-3 sm:text-base"
             >
               Browse Apartments
             </Link>

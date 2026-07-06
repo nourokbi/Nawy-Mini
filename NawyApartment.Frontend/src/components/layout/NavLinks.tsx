@@ -15,7 +15,7 @@ export default function NavLinks() {
 
   const base =
     "flex items-center gap-1.5 text-sm font-semibold transition-colors sm:text-lg";
-  const active = "text-[#FF5E00]";
+  const active = "text-brand-accent";
   const inactive = "text-gray-700 hover:text-gray-900";
 
   return (

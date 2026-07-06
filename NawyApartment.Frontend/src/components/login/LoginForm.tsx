@@ -42,7 +42,7 @@ export default function LoginForm() {
 
   return (
     <div className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-8 shadow-xl">
-      <h1 className="mb-6 text-center text-3xl font-extrabold text-[#1E4164]">
+      <h1 className="mb-6 text-center text-3xl font-extrabold text-brand">
         Sign in
       </h1>
 
@@ -54,7 +54,7 @@ export default function LoginForm() {
         className="space-y-4"
       >
         <div className="space-y-1.5">
-          <label htmlFor="email" className="text-sm font-medium text-[#1E4164]">
+          <label htmlFor="email" className="text-sm font-medium text-brand">
             Email
           </label>
           <Input
@@ -69,7 +69,7 @@ export default function LoginForm() {
         <div className="space-y-1.5">
           <label
             htmlFor="password"
-            className="text-sm font-medium text-[#1E4164]"
+            className="text-sm font-medium text-brand"
           >
             Password
           </label>
@@ -87,7 +87,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="h-11 w-full bg-[#FF5E00] font-bold hover:bg-[#e65400]"
+          className="h-11 w-full bg-brand-accent font-bold hover:bg-brand-accent-hover"
         >
           {loading ? "Signing in..." : "Sign in"}
         </Button>

@@ -20,7 +20,7 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
     <div>
       <Link
         href="/apartments"
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-[#1E4164]"
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to apartments
@@ -35,14 +35,14 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
             alt={apartment.unitName}
             className="h-full w-full object-cover"
           />
-          <span className="absolute left-4 top-4 rounded-full bg-[#1E4164] px-3 py-1 text-sm font-medium text-white">
+          <span className="absolute left-4 top-4 rounded-full bg-brand px-3 py-1 text-sm font-medium text-white">
             {apartment.project}
           </span>
         </div>
 
         {/* Info */}
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold text-[#1E4164] sm:text-4xl">
+          <h1 className="text-3xl font-bold text-brand sm:text-4xl">
             {apartment.unitName}
           </h1>
           <p className="mt-2 flex items-center gap-2 text-gray-500">
@@ -61,8 +61,8 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
                 key={label}
                 className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 p-4 text-center"
               >
-                <Icon className="h-5 w-5 text-[#1E4164]" />
-                <span className="text-lg font-semibold text-[#1E4164]">
+                <Icon className="h-5 w-5 text-brand" />
+                <span className="text-lg font-semibold text-brand">
                   {value}
                 </span>
                 <span className="text-xs text-gray-500">{label}</span>
@@ -83,7 +83,7 @@ export default function ApartmentDetails({ apartment }: ApartmentDetailsProps) {
 
       {/* Description */}
       <section className="mt-10">
-        <h2 className="text-xl font-semibold text-[#1E4164]">Description</h2>
+        <h2 className="text-xl font-semibold text-brand">Description</h2>
         <p className="mt-3 leading-relaxed text-gray-600">
           {apartment.description || "No description provided."}
         </p>

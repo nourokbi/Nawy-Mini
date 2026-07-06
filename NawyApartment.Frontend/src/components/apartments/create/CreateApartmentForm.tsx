@@ -83,7 +83,7 @@ export default function CreateApartmentForm() {
 
   return (
     <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-xl">
-      <h1 className="mb-5 text-3xl font-extrabold text-[#1E4164]">
+      <h1 className="mb-5 text-3xl font-extrabold text-brand">
         Add apartment
       </h1>
 
@@ -98,7 +98,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="unitName"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Unit name <span className="text-red-500">*</span>
             </label>
@@ -114,7 +114,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="unitNumber"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Unit number <span className="text-red-500">*</span>
             </label>
@@ -131,7 +131,7 @@ export default function CreateApartmentForm() {
         <div className="space-y-1.5">
           <label
             htmlFor="project"
-            className="text-sm font-medium text-[#1E4164]"
+            className="text-sm font-medium text-brand"
           >
             Project <span className="text-red-500">*</span>
           </label>
@@ -147,7 +147,7 @@ export default function CreateApartmentForm() {
         <div className="space-y-1.5">
           <label
             htmlFor="description"
-            className="text-sm font-medium text-[#1E4164]"
+            className="text-sm font-medium text-brand"
           >
             Description
           </label>
@@ -157,7 +157,7 @@ export default function CreateApartmentForm() {
             rows={3}
             value={form.description}
             onChange={handleChange}
-            className="w-full rounded-md border border-gray-400 px-3 py-2 text-sm outline-none focus:border-[#1E4164] focus:ring-1 focus:ring-[#1E4164]"
+            className="w-full rounded-md border border-gray-400 px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand"
           />
         </div>
 
@@ -165,7 +165,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="price"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Price (EGP) <span className="text-red-500">*</span>
             </label>
@@ -182,7 +182,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="area"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Area (m²) <span className="text-red-500">*</span>
             </label>
@@ -199,7 +199,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="bedrooms"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Bedrooms <span className="text-red-500">*</span>
             </label>
@@ -216,7 +216,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="bathrooms"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Bathrooms <span className="text-red-500">*</span>
             </label>
@@ -235,7 +235,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="address"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Address
             </label>
@@ -250,7 +250,7 @@ export default function CreateApartmentForm() {
           <div className="space-y-1.5">
             <label
               htmlFor="imageUrl"
-              className="text-sm font-medium text-[#1E4164]"
+              className="text-sm font-medium text-brand"
             >
               Image URL
             </label>
@@ -269,7 +269,7 @@ export default function CreateApartmentForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="h-11 w-full bg-[#FF5E00] font-bold hover:bg-[#e65400]"
+          className="h-11 w-full bg-brand-accent font-bold hover:bg-brand-accent-hover"
         >
           {loading ? "Adding..." : "Add apartment"}
         </Button>

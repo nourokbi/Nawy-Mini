@@ -25,3 +25,17 @@ export type PaginatedApartments = {
   data: Apartment[];
   meta: ApartmentsMeta;
 };
+
+// Fields accepted when creating an apartment.
+export type CreateApartmentInput = {
+  unitName: string;
+  unitNumber: string;
+  project: string;
+  description: string | null;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  imageUrl: string | null;
+  address: string | null;
+};

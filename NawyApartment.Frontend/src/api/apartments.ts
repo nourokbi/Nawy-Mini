@@ -1,24 +1,14 @@
 import { notFound } from "next/navigation";
-import type { Apartment, PaginatedApartments } from "@/types/apartments";
+import type {
+  Apartment,
+  PaginatedApartments,
+  CreateApartmentInput,
+} from "@/types/apartments";
 import { ApiError } from "./error";
 import { SERVER_API, CLIENT_API } from "./config";
 
 const API_BASE = `${SERVER_API}/apartments`;
 const CLIENT_API_BASE = `${CLIENT_API}/apartments`;
-
-// Fields accepted when creating an apartment.
-export type CreateApartmentInput = {
-  unitName: string;
-  unitNumber: string;
-  project: string;
-  description?: string;
-  price: number;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  imageUrl?: string;
-  address?: string;
-};
 
 // Fetch apartments with optional search term
 export async function getApartments({
@@ -68,11 +58,9 @@ export async function getApartment(id: string): Promise<Apartment> {
   return res.json();
 }
 
-/*
-  Create an apartment (client-side, requires a JWT).
-  Returns the created apartment; throws ApiError on failure
-  (e.g. 401 expired token, 409 duplicate unit number).
- */
+//Create an apartment (client-side, requires a JWT).
+//Returns the created apartment; throws ApiError on failure
+//e.g. 401 expired token, 409 duplicate unit number).
 export async function createApartment(
   apartment: CreateApartmentInput,
   token: string,
@@ -89,16 +77,14 @@ export async function createApartment(
   if (!res.ok) {
     const data = (await res.json()) || {};
     // On a validation error the backend sends a `details` tree; surface the
-    // first field's first message (prefixed with the field name so it's clear
-    // which of the fields failed) instead of the generic "Validation failed".
-    const firstEntry = Object.entries<{ errors?: string[] }>(
+    // first field's first message instead of the generic "Validation failed".
+    const firstError = Object.values<{ errors?: string[] }>(
       data.details?.properties ?? {},
-    )[0];
-    const message =
-      firstEntry && firstEntry[1]?.errors?.[0]
-        ? `${firstEntry[0]}: ${firstEntry[1].errors[0]}`
-        : (data.error ?? "Failed to create apartment.");
-    throw new ApiError(res.status, message);
+    )[0]?.errors?.[0];
+    throw new ApiError(
+      res.status,
+      firstError ?? data.error ?? "Failed to create apartment.",
+    );
   }
   return res.json();
 }

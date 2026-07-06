@@ -30,8 +30,11 @@ export default function CreateApartmentForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function update(field: keyof typeof form, value: string) {
-    setForm((f) => ({ ...f, [field]: value }));
+  // Updates the field whose `name` matches the input that changed.
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit() {
@@ -53,12 +56,13 @@ export default function CreateApartmentForm() {
           bedrooms: Number(form.bedrooms),
           bathrooms: Number(form.bathrooms),
           area: Number(form.area),
-          ...(form.description ? { description: form.description } : {}),
-          ...(form.imageUrl ? { imageUrl: form.imageUrl } : {}),
-          ...(form.address ? { address: form.address } : {}),
+          description: form.description || null,
+          imageUrl: form.imageUrl || null,
+          address: form.address || null,
         },
         token,
       );
+
       router.push(`/apartments/${created.id}`);
     } catch (err) {
       // Token expired mid-session -> clear it and send back to login.
@@ -91,29 +95,54 @@ export default function CreateApartmentForm() {
         className="space-y-3"
       >
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field
-            id="unitName"
-            label="Unit name"
-            value={form.unitName}
-            onChange={(v) => update("unitName", v)}
-            required
-          />
-          <Field
-            id="unitNumber"
-            label="Unit number"
-            value={form.unitNumber}
-            onChange={(v) => update("unitNumber", v)}
+          <div className="space-y-1.5">
+            <label
+              htmlFor="unitName"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Unit name <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="unitName"
+              name="unitName"
+              value={form.unitName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="unitNumber"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Unit number <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="unitNumber"
+              name="unitNumber"
+              value={form.unitNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label
+            htmlFor="project"
+            className="text-sm font-medium text-[#1E4164]"
+          >
+            Project <span className="text-red-500">*</span>
+          </label>
+          <Input
+            id="project"
+            name="project"
+            value={form.project}
+            onChange={handleChange}
             required
           />
         </div>
-
-        <Field
-          id="project"
-          label="Project"
-          value={form.project}
-          onChange={(v) => update("project", v)}
-          required
-        />
 
         <div className="space-y-1.5">
           <label
@@ -124,62 +153,115 @@ export default function CreateApartmentForm() {
           </label>
           <textarea
             id="description"
+            name="description"
             rows={3}
             value={form.description}
-            onChange={(e) => update("description", e.target.value)}
+            onChange={handleChange}
             className="w-full rounded-md border border-gray-400 px-3 py-2 text-sm outline-none focus:border-[#1E4164] focus:ring-1 focus:ring-[#1E4164]"
           />
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
-          <Field
-            id="price"
-            label="Price (EGP)"
-            type="number"
-            value={form.price}
-            onChange={(v) => update("price", v)}
-            required
-          />
-          <Field
-            id="area"
-            label="Area (m²)"
-            type="number"
-            value={form.area}
-            onChange={(v) => update("area", v)}
-            required
-          />
-          <Field
-            id="bedrooms"
-            label="Bedrooms"
-            type="number"
-            value={form.bedrooms}
-            onChange={(v) => update("bedrooms", v)}
-            required
-          />
-          <Field
-            id="bathrooms"
-            label="Bathrooms"
-            type="number"
-            value={form.bathrooms}
-            onChange={(v) => update("bathrooms", v)}
-            required
-          />
+          <div className="space-y-1.5">
+            <label
+              htmlFor="price"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Price (EGP) <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              value={form.price}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="area"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Area (m²) <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="area"
+              name="area"
+              type="number"
+              value={form.area}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="bedrooms"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Bedrooms <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="bedrooms"
+              name="bedrooms"
+              type="number"
+              value={form.bedrooms}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="bathrooms"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Bathrooms <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="bathrooms"
+              name="bathrooms"
+              type="number"
+              value={form.bathrooms}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field
-            id="address"
-            label="Address"
-            value={form.address}
-            onChange={(v) => update("address", v)}
-          />
-          <Field
-            id="imageUrl"
-            label="Image URL"
-            type="url"
-            value={form.imageUrl}
-            onChange={(v) => update("imageUrl", v)}
-          />
+          <div className="space-y-1.5">
+            <label
+              htmlFor="address"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Address
+            </label>
+            <Input
+              id="address"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="imageUrl"
+              className="text-sm font-medium text-[#1E4164]"
+            >
+              Image URL
+            </label>
+            <Input
+              id="imageUrl"
+              name="imageUrl"
+              type="url"
+              value={form.imageUrl}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
@@ -192,39 +274,6 @@ export default function CreateApartmentForm() {
           {loading ? "Adding..." : "Add apartment"}
         </Button>
       </form>
-    </div>
-  );
-}
-
-// Small labeled input; shows a red * when the field is required.
-function Field({
-  id,
-  label,
-  value,
-  onChange,
-  type = "text",
-  required = false,
-}: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-[#1E4164]">
-        {label}
-        {required && <span className="text-red-500"> *</span>}
-      </label>
-      <Input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        required={required}
-      />
     </div>
   );
 }

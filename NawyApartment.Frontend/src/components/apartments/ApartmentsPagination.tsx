@@ -42,7 +42,7 @@ export default function ApartmentsPagination({
         aria-current="page"
         className="inline-flex h-8 items-center rounded-lg border border-gray-200 px-3 text-sm font-semibold"
       >
-        {page}
+        {page} of {totalPages}
       </span>
 
       <PageArrow href={hrefFor(page + 1)} disabled={page >= totalPages}>

@@ -46,14 +46,14 @@ export async function getApartment(id: string): Promise<Apartment> {
   try {
     res = await fetch(`${API_BASE}/${id}`, { cache: "no-store" });
   } catch {
-    // Backend unreachable -> render the not-found page instead of crashing.
-    notFound();
+    throw new Error("Unable to reach the server.");
   }
 
-  // Invalid id (400), no such apartment (404), or any other error response
-  // -> render the not-found page rather than throwing.
+  if (res.status === 404 || res.status === 400) {
+    notFound();                                    
+  }
   if (!res.ok) {
-    notFound();
+    throw new Error("Failed to load apartment.");
   }
   return res.json();
 }
